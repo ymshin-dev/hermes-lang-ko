@@ -1,14 +1,14 @@
-name: hermes-lang-pl
-version: 0.2.0
+name: hermes-lang-ko
+version: 1.0.0
 description: >-
-  Polish (Polski) language pack for Hermes Agent — core CLI/gateway messages, the Desktop app and the TUI.
-  Disclosure — text-only language pack; no code, no network.
-author: Teknium
+  Korean (한국어) language pack for Hermes Agent — core CLI/gateway messages, the Hermes TUI
+  and the Desktop app. Disclosure — text-only language pack; no code, no network.
+author: Shin Yeongmin
 license: MIT
-homepage: https://github.com/teknium1/hermes-lang-pl
-tags: [i18n, language-pack, polish]
+homepage: https://github.com/ymshin-dev/hermes-lang-ko
+tags: [i18n, language-pack, korean]
 requires_hermes: ">=0.22"
 provides_locales:
-  - id: pl
-    endonym: Polski
+  - id: ko
+    endonym: 한국어
     rtl: false

@@ -1,13 +1,16 @@
-# Validation — v0.2.0
+# Validation — v1.0.0
 
-Sources: hermes-agent `origin/feat/pluggable-i18n` @ `e163ab83523` — `locales/en.yaml` (3,426 keys),
-`locales/_keys.tui.json` (1,250 keys, English templates from `ui-tui` `i18n-export-en`),
-`locales/_keys.desktop.json` (4,878 keys; 16 intentionally absent, see README *Not translated*).
+Sources: hermes-agent branch `ko-locale` @ `313fa2eedf` — `locales/ko.yaml`, `locales/ko.tui.yaml`
+(bundled Korean, copied verbatim), `locales/en.yaml` (3,432 keys), `locales/_keys.tui.json`
+(1,259 keys), `locales/_keys.desktop.json` (4,987 keys), and the branch's desktop TS overlays
+(`apps/desktop/src/i18n/ko*.ts`) converted into `locales/ko.desktop.yaml`.
 
-Coverage: core 3426/3426 · TUI 1250/1250 · desktop 4862/4878. The 374 core and 9 TUI translations shipped in
-v0.1.0 are byte-identical in v0.2.0 (the TUI key `overlay.close` no longer exists upstream and was dropped).
+Coverage: core 3432/3432 · TUI 1259/1259 · desktop 4888/4987 — 99 desktop keys intentionally
+absent (see the list below).
 
-## `hermes plugins validate` (run from the `e163ab83523` worktree)
+## `hermes plugins validate` (run from the hermes-agent `ko-locale` worktree)
+
+<!-- VALIDATE_BEGIN -->
 
 ```
 ✓ manifest — plugin.yaml parses
@@ -20,50 +23,163 @@ v0.1.0 are byte-identical in v0.2.0 (the TUI key `overlay.close` no longer exist
 ✓ capability probe — skipped (no __init__.py)
 ✓ built-in tool collisions — no tools to check
 ✓ security scan — caution
-✓ locale pl.desktop — pl.desktop.yaml: 4862 key(s), 4862 match the English 
+✓ no core override — no runtime rebinds of Hermes core
+✓ locale ko.desktop — ko.desktop.yaml: 4888 key(s), 4888 match the English 
 desktop catalog
-✓ locale pl.tui — pl.tui.yaml: 1250 key(s), 1250 match the English tui catalog
-✓ locale pl — pl.yaml: 3426 key(s), 3426 match the English core catalog
+✓ locale ko.tui — ko.tui.yaml: 1259 key(s), 1259 match the English tui catalog
+✓ locale ko — ko.yaml: 3432 key(s), 3432 match the English core catalog
 ⚠ no __init__.py — capability probe skipped (manifest-only plugin)
-⚠ security scan caution: curl_pipe_shell (pl.desktop.yaml:1686), ssh_dir_access 
-(pl.desktop.yaml:1663), ssh_dir_access (pl.desktop.yaml:1666), ssh_dir_access 
-(pl.desktop.yaml:1669), ssh_dir_access (pl.desktop.yaml:1670), ssh_dir_access 
-(pl.desktop.yaml:1672), ssh_dir_access (pl.desktop.yaml:1674), ssh_dir_access 
-(pl.desktop.yaml:1684), sudo_usage (pl.desktop.yaml:5108), sudo_usage 
-(pl.desktop.yaml:5111), sudo_usage (pl.desktop.yaml:5113), sudo_usage 
-(pl.desktop.yaml:5114), sudo_usage (pl.tui.yaml:1206), sudo_usage 
-(pl.tui.yaml:674), sudo_usage (pl.tui.yaml:689), sudo_usage (pl.tui.yaml:730), 
-sudo_usage (pl.yaml:2319), sudo_usage (pl.yaml:2568), sudo_usage (pl.yaml:2569),
-sudo_usage (pl.yaml:3960)
+⚠ security scan caution: curl_pipe_shell (VALIDATION.md:39), curl_pipe_shell 
+(ko.desktop.yaml:3472)
 
 Validation passed.
 ```
 
-The *caution* findings are translated UI strings that mention `sudo`, `~/.ssh` or `curl | sh` (the English
-originals contain the same words); a language pack ships no code.
+<!-- VALIDATE_END -->
+
+The *caution* finding is translated UI text that mentions `curl | sh` (the English original
+contains the same words); a language pack ships no code.
 
 ## Key-set / placeholder parity script
 
 ```
-[core]    pl.yaml keys=3426 == en.yaml keys=3426; same order; placeholder_mismatch=0
-[tui]     pl.tui.yaml keys=1250 == _keys.tui.json keys=1250
-[desktop] pl.desktop.yaml keys=4862; _keys.desktop.json keys=4878; stray=0; intentionally absent=16 (documented in README)
-RESULT: PASS
+[core]     ko.yaml: 3432 keys · en.yaml: 3432 · missing: 0 · stray: 0 · placeholder_mismatch: 0
+[tui]      ko.tui.yaml: 1259 keys · _keys.tui.json: 1259 · missing: 0 · stray: 0
+[desktop]  ko.desktop.yaml: 4888 keys · _keys.desktop.json: 4987 · missing: 99 · stray: 0
+RESULT: PASS (desktop missing = the documented skips listed below)
 ```
 
-Per-fragment checks during translation (19 fragments): key-set equality, `{placeholder}` multiset equality,
-leading/trailing whitespace and `\n` parity, matcher lists (`approval.inputs.*`) keep every English token and
-append Polish ones — all `0 errors`.
+Generation-time desktop checks: every English function leaf's Korean counterpart was probed with
+sentinel arguments (`⟦i⟧`, then empty-string, numeric and boolean replacements — the shapes
+`apps/desktop/src/i18n/catalog-completeness.test.ts` uses) and the emitted positional
+`{0}`/`{1}` template must reproduce the function's output for every shape. 613 function entries
+converted this way; placeholder parity against the English templates reports `en-only: 0`,
+`ko-only: 0`.
 
-## Previous release — v0.1.0
+## Intentionally absent desktop keys (99)
 
-Sources: hermes-agent origin/main 98278833e29 (locales/en.yaml, apps/desktop/src/i18n/en.ts); TUI en from lane/i18n-tui worktree (10 keys).
+**Branching / boolean-toggle function leaves (37)** — rendering picks a side on a
+boolean/identifier argument or needs a structured argument; a positional string would pin one
+branch, so English shows through:
 
 ```
-[core] pl.yaml: keys=374 source=374 failures=0
-[desktop] pl.desktop.yaml: keys=4862 source=4862 failures=0
-[tui] pl.tui.yaml: keys=10 source=10 failures=0
-[tui] _keys.tui.json parity: OK
-[manifest] hermes-lang-pl 0.1.0 provides_locales: [{'id': 'pl', 'endonym': 'Polski', 'rtl': False}]
-RESULT: PASS
+assistant.catalogInstall.serverNotConnected
+assistant.tool.titleTemplates.runningPrefixedTool
+assistant.tool.titleTemplates.runningTool
+commandCenter.maintenance.bytes
+commandCenter.pets.toggleFailed
+connectorsPage.tools.conflictBody
+desktop.yoloSystem
+install.testSucceeded
+intro.custom
+messaging.waitingSince
+preview.noInlineBody
+preview.web.finishedRestarting
+preview.web.loadFailedConsole
+rightSidebar.folderTip
+settings.billing.charge.added
+settings.billing.errors.rateLimited.message
+settings.billing.errors.stripeUnavailable.message
+settings.billing.plan.effectScheduled
+settings.gateway.connectedTo
+settings.localModels.downloadEtaHours
+settings.mcp.capabilitySummary
+settings.model.moaReferenceToggle
+settings.plugins.installModal.catalogPinned
+settings.plugins.installModal.serverNotConnected
+settings.plugins.installModal.skillsReady
+settings.vault.identifierShown
+shell.modelMenu.limitedTip
+shell.modelMenu.priceTitle
+shell.modelMenu.usageLeft
+shell.modelMenu.usageWindow
+sidebar.projects.branchOff
+sidebar.projects.toggle
+skills.hub.installBlockedMessage
+skills.plugins.catalogProvenance
+skills.toggleToolset
+ui.sidebar.toggle
+webhooks.toggleFailed
 ```
+
+**List/object leaves (2)** — text-only packs cannot carry them:
+
+```
+composer.followUpPlaceholders
+composer.newSessionPlaceholders
+```
+
+**Korean copy identical to English (60)** — plain URLs, placeholder examples, id-like strings
+(`composer.url`, `artifacts.zero`, `settings.connections.kindSsh`, …); shipping them would pin a
+frozen English copy over Hermes's bundled English, and the English fallback renders the same text:
+
+```
+artifacts.colLocationLink
+artifacts.zero
+assistant.catalogInstall.requiresHermes
+composer.themeTryPost
+composer.url
+composer.urlPlaceholder
+composer.voiceEngineLiveShort
+connectorsPage.add.authOauth
+connectorsPage.add.pastePlaceholder
+connectorsPage.add.typeStdio
+connectorsPage.add.url
+cron.deliveryLabels.discord
+cron.deliveryLabels.slack
+cron.deliveryLabels.telegram
+desktop.yoloTitle
+freeTier.providerName
+install.remoteUrlPlaceholder
+messaging.fieldCopy.MATRIX_HOMESERVER.placeholder
+messaging.fieldCopy.MATRIX_USER_ID.placeholder
+messaging.fieldCopy.MATTERMOST_URL.placeholder
+messaging.fieldCopy.SIGNAL_HTTP_URL.placeholder
+modelPicker.pro
+onboarding.pro
+preview.diff
+profiles.remoteOverride.urlPlaceholder
+prompts.vaultSaveIdentifierPlaceholder
+sendDiagnostics.links.discord
+sendDiagnostics.links.github
+sendDiagnostics.links.portal
+settings.appearance.installPlaceholder
+settings.billing.state.autoRefill.notAvailablePill
+settings.config.attachmentSizeUnit
+settings.connections.kindCloud
+settings.connections.kindSsh
+settings.connections.urlTitle
+settings.customEndpoints.namePlaceholder
+settings.gateway.cloudSignInTitle
+settings.gateway.cloudTitle
+settings.model.moaTitle
+settings.model.tasks.mcp.label
+settings.nav.mcp
+settings.notifications.testTitle
+settings.plugins.installModal.repoPlaceholder
+settings.vault.cvcField
+settings.vault.originPlaceholder
+settings.vault.originPlaceholderCheckout
+shell.gatewayMenu.gateway
+shell.statusbar.agents
+shell.statusbar.contextUsagePanel.categories.mcp
+shell.statusbar.cron
+shell.statusbar.gateway
+shell.statusbar.gatewayTitle
+shell.statusbar.systemResources.ram
+shell.statusbar.toggleCommandCenter
+sidebar.filter.pr
+updates.appName
+updates.versionDetailsDistributionStore
+webhooks.deliverOptions.discord
+webhooks.deliverOptions.slack
+webhooks.deliverOptions.telegram
+```
+
+## Note on the core and TUI catalogs
+
+They mirror the Korean translations Hermes itself bundles (`hermes --tui`'s
+`locales/ko.tui.yaml` and the core `locales/ko.yaml`, shipped on the `ko-locale` branch).
+Hermes keeps updating those files upstream; this pack carries the `313fa2eedf` revision so the
+declared language validates terminal-to-desktop, and a partial pack still degrades key-by-key to
+the bundled English if upstream revises wording.
