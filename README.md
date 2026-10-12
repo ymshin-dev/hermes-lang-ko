@@ -27,8 +27,9 @@ hermes config set display.language ko
 ```
 
 Restart the gateway / Desktop / TUI afterwards. `hermes plugins validate <path>` on a checkout of
-this repo confirms the pack parses and its keys are known. Requires Hermes `>= 0.22` (pluggable
-i18n, `9bcbe7b5df`).
+this repo confirms the pack parses and its keys are known. Requires Hermes `>= 0.21.6` (pluggable
+i18n, `9bcbe7b5df`; it shipped in the `v0.21.4`-line canaries from 2026-09-29 onward, and 0.21.6
+is the latest stable build that carries it).
 
 To go back: `hermes config set display.language en`; to remove:
 `hermes plugins uninstall hermes-lang-ko`.

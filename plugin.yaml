@@ -7,7 +7,7 @@ author: Shin Yeongmin
 license: MIT
 homepage: https://github.com/ymshin-dev/hermes-lang-ko
 tags: [i18n, language-pack, korean]
-requires_hermes: ">=0.22"
+requires_hermes: ">=0.21.6"
 provides_locales:
   - id: ko
     endonym: 한국어

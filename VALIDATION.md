@@ -15,7 +15,7 @@ absent (see the list below).
 ```
 ✓ manifest — plugin.yaml parses
 ✓ manifest fields — name, version, description present
-✓ requires_hermes — spec '>=0.22' parses
+✓ requires_hermes — spec '>=0.21.6' parses
 ✓ config schema — not declared
 ✓ requires_env — all entries UPPER_SNAKE
 ✓ loadable — entry: locales/ (language pack)
@@ -29,7 +29,7 @@ desktop catalog
 ✓ locale ko.tui — ko.tui.yaml: 1259 key(s), 1259 match the English tui catalog
 ✓ locale ko — ko.yaml: 3432 key(s), 3432 match the English core catalog
 ⚠ no __init__.py — capability probe skipped (manifest-only plugin)
-⚠ security scan caution: curl_pipe_shell (VALIDATION.md:39), curl_pipe_shell 
+⚠ security scan caution: curl_pipe_shell (VALIDATION.md:40), curl_pipe_shell 
 (ko.desktop.yaml:3472)
 
 Validation passed.
